@@ -1,0 +1,11 @@
+C:\Users\Marc-PC\Documents\directory_parser\DirectoryParser\DirectoryParser\bin\Debug\DirectoryParser.exe.config
+C:\Users\Marc-PC\Documents\directory_parser\DirectoryParser\DirectoryParser\bin\Debug\DirectoryParser.exe
+C:\Users\Marc-PC\Documents\directory_parser\DirectoryParser\DirectoryParser\bin\Debug\DirectoryParser.pdb
+C:\Users\Marc-PC\Documents\directory_parser\DirectoryParser\DirectoryParser\obj\Debug\DirectoryParser.csprojAssemblyReference.cache
+C:\Users\Marc-PC\Documents\directory_parser\DirectoryParser\DirectoryParser\obj\Debug\DirectoryParser.Form1.resources
+C:\Users\Marc-PC\Documents\directory_parser\DirectoryParser\DirectoryParser\obj\Debug\DirectoryParser.Properties.Resources.resources
+C:\Users\Marc-PC\Documents\directory_parser\DirectoryParser\DirectoryParser\obj\Debug\DirectoryParser.csproj.GenerateResource.cache
+C:\Users\Marc-PC\Documents\directory_parser\DirectoryParser\DirectoryParser\obj\Debug\DirectoryParser.csproj.CoreCompileInputs.cache
+C:\Users\Marc-PC\Documents\directory_parser\DirectoryParser\DirectoryParser\obj\Debug\DirectoryParser.exe
+C:\Users\Marc-PC\Documents\directory_parser\DirectoryParser\DirectoryParser\obj\Debug\DirectoryParser.pdb
+C:\Users\Marc-PC\Documents\directory_parser\DirectoryParser\DirectoryParser\obj\Debug\DirectoryParser.csproj.ResolveComReference.cache
