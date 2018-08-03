@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 using Microsoft.VisualBasic.FileIO;
 using Word = Microsoft.Office.Interop.Word;
 
@@ -11,36 +12,111 @@ namespace DirectoryParser
 {
     class DocumentBuilder
     {
+        private string[] headers;
         private bool success = false;
         private Word.Document document;
         private Word.Application winword;
-
-
-
-        private String ParseCsv(String directory)
+        private List<Family> familyList = new List<Family>();
+        private string[] desired_fields = new string[]
         {
+            "Couple Name",
+            "Family Phone",
+            "Family Address",
+            "Head Of House Phone",
+            "Child Name"
+        };
+        private Dictionary<string, string> directions = new Dictionary<string, string>
+        {
+            {"NORTH", "N"},
+            {"SOUTH", "S"},
+            {"EAST", "E"},
+            {"WEST", "W"},
+        };
+
+        private void ParseCsv(String directory)
+        {
+            
             using (TextFieldParser parser = new TextFieldParser(directory))
             {
+                int pass = 0;
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(",");
                 while (!parser.EndOfData)
                 {
-                    //Process row
-                    string[] fields = parser.ReadFields();
-                    foreach (string field in fields)
+                    ++pass;
+                    if (pass == 1)
                     {
-                        //TODO: Process field
+                        //Assign CSV headers to separate array for easier processing.
+                        this.headers = parser.ReadFields();
+                        continue;
+                    }
+
+                    //Process row
+                    Family family = new Family();
+                    string[] fields = parser.ReadFields();
+
+                    for (int i = 0; i < fields.Length; ++i) {
+                        if (string.IsNullOrEmpty(fields[i].Trim()))
+                        {
+                            continue;
+                        }
+
+                        if (this.IsDesiredField(i))
+                        {
+                            this.ProcessField(family, fields[i].Trim(), this.headers[i].Trim());
+                        }
+
+                    }
+
+                    if (!string.IsNullOrEmpty(family.GetHead()))
+                    {
+                        this.familyList.Add(family);
                     }
                 }
             }
 
-            return "bob";
+        }
+
+        private void ProcessField(Family family, string field_value, string header)
+        {
+            switch (header)
+            {
+                case "Couple Name":
+                    family.SetHead(field_value);
+                    break;
+                case "Family Phone":
+                case "Head Of House Phone":
+                    family.AddPhoneNumber(field_value);
+                    break;
+                case "Family Address":
+                    //Some special logice to split the address and just grab street addresses
+                    string[] tokens = field_value.Split(new[] { " Spanish Fork, Utah 84660" }, StringSplitOptions.None);
+                    field_value = tokens[0].ToUpper().Trim();
+
+                    foreach (var pair in this.directions)
+                    {
+                        field_value = field_value.Replace(pair.Key, pair.Value);
+                    }
+
+                    family.SetAddress(field_value);
+                    break;
+                case "Child Name":
+                    family.AddChild(field_value);
+                    break;
+                default:
+                    throw new Exception("Invalid column name: " + header);
+            }
+        }
+
+        private Boolean IsDesiredField(int index)
+        {
+            return this.desired_fields.Contains(this.headers[index].Trim());
         }
 
         //https://www.c-sharpcorner.com/UploadFile/muralidharan.d/how-to-create-word-document-using-C-Sharp/
         public void CreateDocument(String directory)
         {
-            string parsed_file = this.ParseCsv(directory);
+            this.ParseCsv(directory);
 
             //Create an instance for word app
             this.winword = new Word.Application();
@@ -96,6 +172,5 @@ namespace DirectoryParser
         {
             return this.success;
         }
-
     }
 }
