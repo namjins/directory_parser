@@ -48,9 +48,14 @@ namespace DirectoryParser
            return this.head;
         }
 
-        public List<String> GetPhoneNumbers()
+        public String GetPhoneNumbers()
         {
-            return this.phone_numbers;
+            string phone_numbers = "";
+            foreach (String phone_number in this.phone_numbers)
+            {
+                phone_numbers += " " + phone_number;
+            }
+            return phone_numbers;
         }
 
         public string GetAddress()
@@ -58,9 +63,14 @@ namespace DirectoryParser
             return this.address;
         }
 
-        public List<String> GetChildren()
+        public String GetChildren()
         {
-            return this.children;
+            string children = "";
+            foreach (String child in this.children)
+            {
+                children += ", " + child;
+            }
+            return children;
         }
 
     }

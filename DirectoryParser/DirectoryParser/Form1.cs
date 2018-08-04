@@ -31,6 +31,8 @@ namespace DirectoryParser
 
         private void select_file_btn_Click(object sender, EventArgs e)
         {
+            error_msg.Visible = false;
+            feedback_label.Visible = false;
             // Displays an OpenFileDialog so the user can select a Cursor.  
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.Filter = "Cursor Files|*.csv";
@@ -42,15 +44,21 @@ namespace DirectoryParser
        // https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/how-to-open-files-using-the-openfiledialog-component
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                this.file = openFileDialog1.FileName;
+                textBox1.Text = openFileDialog1.FileName;
+                this.file = textBox1.Text;
+                save_file.Visible = true;
+                feedback_label.Visible = false;
+
                 //TODO validate file is csv
-                //TODO update field text to show file path.
                 //TODO show save button
             }
         }
 
         private void save_file_Click(object sender, EventArgs e)
         {
+            save_file.Enabled = false;
+            feedback_label.Text = "Processing...";
+            feedback_label.Visible = true;
             DocumentBuilder db = new DocumentBuilder();
 
             try
@@ -59,23 +67,46 @@ namespace DirectoryParser
             }
             catch (Exception ex)
             {
+                save_file.Visible = false;
+                error_msg.Text = ex.Message;
+                error_msg.Visible = true;
                 //TODO set error label = ex.Message
             }
 
+            feedback_label.Visible = false;
+
             // Displays a SaveFileDialog so the user can save the Image  
             // assigned to Button2.  
-            if (db.IsSuccessful()) { 
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "Word Document|*.docx";
-                saveFileDialog1.Title = "Save the Word Document";
-                saveFileDialog1.ShowDialog();
+            if (db.IsSuccessful()) {
+                feedback_label.Text = "Done";
+                feedback_label.Visible = true;
+                try { 
+                    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                    saveFileDialog1.Filter = "Word Document|*.docx";
+                    saveFileDialog1.Title = "Save the Word Document";
+                    saveFileDialog1.ShowDialog();
 
-                // If the file name is not an empty string open it for saving.  
-                if (saveFileDialog1.FileName != "")
+                    // If the file name is not an empty string open it for saving.  
+                    if (saveFileDialog1.FileName != "")
+                    {
+                        db.SaveDocument(saveFileDialog1.FileName);
+                    }
+
+                    feedback_label.Text = "File Saved Successfully";
+                    feedback_label.Visible = true;
+                }
+                catch (Exception ex)
                 {
-                    db.SaveDocument(saveFileDialog1.FileName);
+                    feedback_label.Visible = false;
+                    error_msg.Text = "Unable to save file";
+                    error_msg.Visible = true;
                 }
             }
+
+            save_file.Enabled = true;
+            save_file.Visible = false;
+            textBox1.Text = "Click SELECT FILE to start";
+
         }
     }
 }
